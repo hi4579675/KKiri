@@ -1,14 +1,11 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5433/kkiri
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
+  profiles:
+    active: local
 
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -16,12 +13,28 @@ spring:
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
 
 jwt:
-  secret: your-secret-key-here
-  expiration: 86400000
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION}
+
+kakao:
+  client-id: ${KAKAO_CLIENT_ID}
+  client-secret: ${KAKAO_CLIENT_SECRET}
+  redirect-uri: ${KAKAO_REDIRECT_URI}
+
+r2:
+  access-key: ${R2_ACCESS_KEY}
+  secret-key: ${R2_SECRET_KEY}
+  bucket-name: ${R2_BUCKET_NAME}
+  endpoint: ${R2_ENDPOINT}
+  public-url: ${R2_PUBLIC_URL}
+
+firebase:
+  project-id: ${FIREBASE_PROJECT_ID}
 
 server:
   port: 8080
