@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum SuccessCode implements BaseCode {
 
+    // Health
+    HEALTH_CHECK(HttpStatus.OK, "서버가 정상 동작 중입니다."),
+
     // Auth
     LOGIN_SUCCESS(HttpStatus.OK, "로그인에 성공했습니다."),
     TOKEN_REFRESHED(HttpStatus.OK, "토큰이 갱신되었습니다."),
@@ -16,6 +19,8 @@ public enum SuccessCode implements BaseCode {
     // User
     PROFILE_CREATED(HttpStatus.CREATED, "프로필이 생성되었습니다."),
     PROFILE_UPDATED(HttpStatus.OK, "프로필이 수정되었습니다."),
+    NICKNAME_AVAILABLE(HttpStatus.OK, "사용 가능한 닉네임이에요."),
+
 
     // Group
     GROUP_CREATED(HttpStatus.CREATED, "그룹이 생성되었습니다."),
