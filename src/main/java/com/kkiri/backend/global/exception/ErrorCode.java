@@ -17,6 +17,8 @@ public enum ErrorCode implements BaseErrorCode {
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다."),
     PROFILE_NOT_COMPLETED(HttpStatus.BAD_REQUEST, "프로필을 먼저 설정해주세요."),
+    DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 사용 중인 닉네임이에요."),
+
 
     // Group
     GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "그룹을 찾을 수 없습니다."),
