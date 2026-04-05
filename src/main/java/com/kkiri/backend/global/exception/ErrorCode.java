@@ -34,7 +34,16 @@ public enum ErrorCode implements BaseErrorCode {
 
     // Common
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다.");
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다."),
+
+    // ─── JWT / Token ──────────────────────────────────────────
+    TOKEN_INVALID(HttpStatus.UNAUTHORIZED,  "유효하지 않은 토큰입니다."),
+    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
+    TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED,  "토큰이 존재하지 않습니다."),
+    REFRESH_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다."),
+    BLACKLISTED_TOKEN(HttpStatus.UNAUTHORIZED,  "로그아웃 처리된 토큰입니다.");
+
+
 
     private final HttpStatus status;
     private final String message;
