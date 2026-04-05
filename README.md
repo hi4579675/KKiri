@@ -104,6 +104,61 @@ public void archiveDailyPosts() {
 
 전체 API 명세 → [`docs/api/endpoints.md`](docs/api/endpoints.md)
 
+## 전체 DB
+
+``` 
+users
+├── id (PK)
+├── kakao_id
+├── nickname
+├── avatar_emoji
+├── avatar_color
+├── fcm_token          ← FCM 추가
+├── created_at
+└── updated_at
+
+groups
+├── id (PK)
+├── name
+├── invite_code (UNIQUE)
+├── max_members (default: 5)
+├── created_at
+└── updated_at
+
+group_members
+├── id (PK)
+├── user_id (FK)
+├── group_id (FK)
+├── role (OWNER / MEMBER)
+└── joined_at
+
+posts
+├── id (PK)
+├── user_id (FK)
+├── group_id (FK)
+├── image_url
+├── caption
+├── hour_bucket (0~23)   ← 피드 그룹핑용
+├── heart_count
+├── created_at
+└── updated_at
+
+reactions
+├── id (PK)
+├── post_id (FK)
+├── user_id (FK)
+└── created_at
+(UNIQUE: post_id + user_id)
+
+archive_posts
+├── id (PK)
+├── post_id (FK)
+├── group_id (FK)
+├── archived_date (DATE)  ← 배치 기준일
+└── created_at
+
+
+```
 ---
 
 ## 🔐 인증 플로우

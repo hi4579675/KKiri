@@ -1,15 +1,91 @@
-### 카카오 로그인
+### [Phase 2] 카카오 로그인
+# 카카오 개발자 콘솔 REST API 테스터에서 발급한 액세스 토큰 사용
+# 응답의 accessToken, refreshToken 복사해두기
 POST http://localhost:8080/api/auth/kakao
 Content-Type: application/json
 
 {
-  "accessToken": "eOgv1XM-DTkUwPML7DvpgOWv_WDRW1pWAAAAAQoNIZYAAAGdXEBIHVR13198v8Zc"
+  "accessToken": "qD01X-hCr3VRIQsehr9DCBLMNMSW-12YAAAAAQoNIpkAAAGdYAQp11R13198v8Zc"
 }
 
-### Access Token 재발급
+### [Phase 2] Access Token 재발급
+# refreshToken으로 새 accessToken + refreshToken 발급 (Rotation)
 POST http://localhost:8080/api/auth/refresh
 Content-Type: application/json
 
 {
-  "refreshToken": "위에서_받은_refreshToken"
+  "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzc1NDMxNzMyLCJleHAiOjE3NzYwMzY1MzJ9.-mazDqMxM4ycpzr6c0EgSx-t91_4u0Fmv0A0VJ9FdkE"
+}
+
+### [Phase 2] Health Check
+# 앱 기동 확인용 - 인증 불필요
+GET http://localhost:8080/api/v1/health
+
+###
+
+### ── Phase 3: 프로필 설정 (US-02) ──────────────────────────────
+
+### [Phase 3] 닉네임 중복 확인 - 사용 가능
+# 인증 불필요. available: true 이면 사용 가능
+GET http://localhost:8080/api/users/me/nickname/check?nickname=끼리짱
+
+### [Phase 3] 닉네임 중복 확인 - 이미 사용 중
+# DB에 이미 있는 닉네임으로 테스트 → available: false
+GET http://localhost:8080/api/users/me/nickname/check?nickname=끼리짱
+
+### [Phase 3] 프로필 미완료 유저 차단 확인
+# 카카오 로그인 직후(profileCompleted=false) accessToken으로 호출
+# → 403 PROFILE_NOT_COMPLETED 응답이 와야 정상
+GET http://localhost:8080/api/users/me/fcm-token
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzc1NDMyMzk0LCJleHAiOjE3NzU0MzU5OTR9.AkjWqtnWqINnD2vugW9PDSsHqos3MopZuTe9Uz7lG1k
+
+### [Phase 3] 프로필 설정 완료
+# nickname + avatarEmoji + avatarColor 한 번에 설정
+# 완료 후 profileCompleted = true → 이후 다른 API 접근 가능
+POST http://localhost:8080/api/users/me/profile
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzc1NDMyMzk0LCJleHAiOjE3NzU0MzU5OTR9.AkjWqtnWqINnD2vugW9PDSsHqos3MopZuTe9Uz7lG1k
+
+{
+  "nickname": "끼리짱",
+  "avatarEmoji": "🐶",
+  "avatarColor": "#FF5733"
+}
+
+### [Phase 3] 프로필 설정 완료 후 재차단 없음 확인
+# 프로필 설정 후 같은 토큰으로 호출 → 200이면 ProfileCompleteFilter 통과된 것
+PATCH http://localhost:8080/api/users/me/fcm-token
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzc1NDMyMzk0LCJleHAiOjE3NzU0MzU5OTR9.AkjWqtnWqINnD2vugW9PDSsHqos3MopZuTe9Uz7lG1k
+
+{
+  "fcmToken": "test-token"
+}
+
+### [Phase 3] FCM 토큰 갱신
+# 앱 시작마다 호출 - 기기 토큰 최신화
+PATCH http://localhost:8080/api/users/me/fcm-token
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzc1NDMyMzk0LCJleHAiOjE3NzU0MzU5OTR9.AkjWqtnWqINnD2vugW9PDSsHqos3MopZuTe9Uz7lG1k
+
+{
+  "fcmToken": "test-fcm-token-1234"
+}
+
+### [Phase 3] 알림 OFF 설정
+PATCH http://localhost:8080/api/users/me/push-enabled
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzc1NDMyMzk0LCJleHAiOjE3NzU0MzU5OTR9.AkjWqtnWqINnD2vugW9PDSsHqos3MopZuTe9Uz7lG1k
+
+{
+  "pushEnabled": false
+}
+
+### [Phase 3] 알림 ON 복구
+PATCH http://localhost:8080/api/users/me/push-enabled
+Content-Type: application/json
+Authorization: Bearer 7KXJQPb28MdX-2yVVWeFipUbgLsNjpoYAAAAAQoXIS0AAAGdX_mr81R13198v8Zc
+
+{
+  "pushEnabled": true
 }

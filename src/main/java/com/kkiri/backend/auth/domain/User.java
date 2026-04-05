@@ -85,7 +85,7 @@ public class User {
         this.avatarEmoji = avatarEmoji;
         this.avatarColor = avatarColor;
         this.profileCompleted = true;
-        this.updateAudit.touch();
+        touch();
     }
 
     // 프로필 수정 (닉네임, 아바타 3개는 항상 같이 변경)
@@ -93,7 +93,7 @@ public class User {
         this.nickname = nickname;
         this.avatarEmoji = avatarEmoji;
         this.avatarColor = avatarColor;
-        this.updateAudit.touch();
+        touch();
     }
 
     // 앱 시작마다 호출 - 기기 토큰 갱신 (재설치 시 토큰 변경 대응)
@@ -109,6 +109,13 @@ public class User {
     // 알림 설정 변경 (US-07)
     public void updatePushEnabled(boolean pushEnabled) {
         this.pushEnabled = pushEnabled;
+        touch();
+    }
+
+    // JPA는 @Embedded 컬럼이 모두 null이면 객체 자체를 null로 로드함
+    // pending 상태로 저장된 유저를 수정할 때 NPE 방지
+    private void touch() {
+        if (this.updateAudit == null) this.updateAudit = UpdateAudit.empty();
         this.updateAudit.touch();
     }
 }
