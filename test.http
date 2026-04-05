@@ -1,0 +1,15 @@
+### 카카오 로그인
+POST http://localhost:8080/api/auth/kakao
+Content-Type: application/json
+
+{
+  "accessToken": "eOgv1XM-DTkUwPML7DvpgOWv_WDRW1pWAAAAAQoNIZYAAAGdXEBIHVR13198v8Zc"
+}
+
+### Access Token 재발급
+POST http://localhost:8080/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "위에서_받은_refreshToken"
+}
