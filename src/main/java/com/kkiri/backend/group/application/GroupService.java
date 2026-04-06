@@ -5,6 +5,7 @@ import com.kkiri.backend.auth.infrastructure.UserRepository;
 import com.kkiri.backend.global.exception.CustomException;
 import com.kkiri.backend.global.exception.ErrorCode;
 import com.kkiri.backend.group.application.dto.CreateGroupRequest;
+import com.kkiri.backend.group.application.dto.GroupMemberResponse;
 import com.kkiri.backend.group.application.dto.GroupResponse;
 import com.kkiri.backend.group.application.dto.InviteCodeResponse;
 import com.kkiri.backend.group.application.dto.JoinGroupResponse;
@@ -83,6 +84,21 @@ public class GroupService {
         groupMemberRepository.save(GroupMember.createMember(group, user));
         return new JoinGroupResponse(group.getId(), group.getName(), currentCount + 1);
     }
+    // 내가 속한 그룹 목록
+    public List<GroupResponse> getMyGroups(Long userId) {
+        return groupMemberRepository.findByUserId(userId).stream()
+                .map(gm -> GroupResponse.from(gm.getGroup()))
+                .toList();
+    }
+
+    // 멤버 목록 조회
+    public List<GroupMemberResponse> getMembers(Long userId, Long groupId) {
+        validateMember(groupId, userId);
+        return groupMemberRepository.findByGroupId(groupId).stream()
+                .map(GroupMemberResponse::from)
+                .toList();
+    }
+
     // 멤버 강퇴 (방장 전용)
     @Transactional
     public void kickMember(Long ownerId, Long groupId, Long targetUserId) {

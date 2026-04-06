@@ -18,4 +18,7 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> 
     boolean existsByGroupIdAndUserId(Long groupId, Long userId);
 
     Optional<GroupMember> findByGroupIdAndRole(Long groupId, GroupRole role);
+
+    @org.springframework.data.jpa.repository.Query("SELECT gm FROM GroupMember gm JOIN FETCH gm.group WHERE gm.user.id = :userId")
+    List<GroupMember> findByUserId(@org.springframework.data.repository.query.Param("userId") Long userId);
 }
