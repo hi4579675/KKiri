@@ -26,6 +26,16 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     /**
+     * 카카오 인가 코드 로그인 (웹 OAuth 플로우).
+     * 브라우저에서 CORS 없이 서버가 직접 카카오 토큰 교환을 수행합니다.
+     */
+    @Transactional
+    public TokenResponse kakaoLoginWithCode(String code, String redirectUri) {
+        String kakaoAccessToken = kakaoAuthClient.exchangeCodeForToken(code, redirectUri);
+        return kakaoLogin(kakaoAccessToken);
+    }
+
+    /**
      * 카카오 로그인 처리.
      * 앱에서 카카오 accessToken을 받아 유저를 식별하고 JWT를 발급합니다.
      *

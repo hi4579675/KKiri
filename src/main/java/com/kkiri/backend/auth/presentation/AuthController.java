@@ -1,6 +1,7 @@
 package com.kkiri.backend.auth.presentation;
 
 import com.kkiri.backend.auth.application.AuthService;
+import com.kkiri.backend.auth.application.dto.KakaoCodeLoginRequest;
 import com.kkiri.backend.auth.application.dto.KakaoLoginRequest;
 import com.kkiri.backend.auth.application.dto.RefreshRequest;
 import com.kkiri.backend.auth.application.dto.TokenResponse;
@@ -24,6 +25,13 @@ public class AuthController {
     @PostMapping("/kakao")
     public ResponseEntity<ApiResponse<TokenResponse>> kakaoLogin(@RequestBody KakaoLoginRequest request) {
         TokenResponse response = authService.kakaoLogin(request.accessToken());
+        return ApiResponse.onSuccess(SuccessCode.LOGIN_SUCCESS, response);
+    }
+
+    @Operation(summary = "카카오 로그인 (인가 코드)", description = "웹 OAuth 플로우용 — 서버가 직접 카카오 토큰 교환 수행")
+    @PostMapping("/kakao/code")
+    public ResponseEntity<ApiResponse<TokenResponse>> kakaoLoginWithCode(@RequestBody KakaoCodeLoginRequest request) {
+        TokenResponse response = authService.kakaoLoginWithCode(request.code(), request.redirectUri());
         return ApiResponse.onSuccess(SuccessCode.LOGIN_SUCCESS, response);
     }
 

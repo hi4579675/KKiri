@@ -19,7 +19,7 @@ public class UserService {
      * DB 조회 한 번으로 true/false만 반환 — 전체 유저 조회 없음.
      */
     public boolean isNicknameAvailable(String nickname) {
-        return userRepository.existsByNickname(nickname);
+        return !userRepository.existsByNickname(nickname);
     }
 
     /**
