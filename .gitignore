@@ -59,7 +59,6 @@ bin/
 
 # application properties (contains secrets)
 src/main/resources/application-local.yml
-src/main/resources/application-prod.yml
 
 # env
 .env
