@@ -36,6 +36,7 @@ public enum ErrorCode implements BaseErrorCode {
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "포스트를 찾을 수 없습니다."),
     FORBIDDEN_POST(HttpStatus.FORBIDDEN, "본인 포스트만 삭제할 수 있습니다."),
     IMAGE_TOO_LARGE(HttpStatus.BAD_REQUEST, "사진이 너무 커요."),
+    ARCHIVED_POST_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN, "아카이브된 포스트는 삭제할 수 없어요."),
 
     // Common
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
