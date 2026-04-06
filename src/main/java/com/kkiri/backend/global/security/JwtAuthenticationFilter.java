@@ -1,5 +1,6 @@
 package com.kkiri.backend.global.security;
 
+import com.kkiri.backend.global.exception.CustomException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,11 +8,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 @Slf4j
@@ -46,7 +50,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         // 3. 토큰 검증 (만료/변조)
-        jwtProvider.validateToken(token);
+        try {
+            jwtProvider.validateToken(token);
+        } catch (CustomException e) {
+            int status = e.getBaseErrorCode().getReasonHttpStatus().getHttpStatus().value();
+            writeErrorResponse(response, status, e.getMessage());
+            return;
+        }
 
         // 4. 블랙리스트 확인(로그아웃된 토큰)
 
@@ -64,5 +74,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
         filterChain.doFilter(request, response);
+    }
+
+    private void writeErrorResponse(HttpServletResponse response, int status, String message) throws IOException {
+        response.setStatus(status);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        String body = "{\"success\":false,\"code\":\"TOKEN_ERROR\",\"message\":\"" + message + "\",\"data\":null}";
+        response.getWriter().write(body);
     }
 }

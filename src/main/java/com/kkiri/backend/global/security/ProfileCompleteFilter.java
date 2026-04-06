@@ -9,11 +9,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @RequiredArgsConstructor
 public class ProfileCompleteFilter extends OncePerRequestFilter {
@@ -38,7 +41,11 @@ public class ProfileCompleteFilter extends OncePerRequestFilter {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (!user.isProfileCompleted()) {
-            throw new CustomException(ErrorCode.PROFILE_NOT_COMPLETED);
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+            response.getWriter().write("{\"success\":false,\"code\":\"PROFILE_NOT_COMPLETED\",\"message\":\"프로필을 먼저 설정해주세요.\",\"data\":null}");
+            return;
         }
         filterChain.doFilter(request, response);
     }
