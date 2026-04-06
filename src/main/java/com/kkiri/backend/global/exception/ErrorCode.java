@@ -28,6 +28,9 @@ public enum ErrorCode implements BaseErrorCode {
     ALREADY_IN_GROUP(HttpStatus.BAD_REQUEST, "이미 그룹에 속해 있습니다."),
     NOT_GROUP_MEMBER(HttpStatus.FORBIDDEN, "그룹 멤버가 아닙니다."),
     NOT_GROUP_OWNER(HttpStatus.FORBIDDEN, "그룹 방장이 아닙니다."),
+    CANNOT_KICK_OWNER(HttpStatus.BAD_REQUEST, "방장은 강퇴할 수 없습니다."),
+    INVITE_CODE_NOT_EXPIRED(HttpStatus.BAD_REQUEST, "아직 유효한 초대 코드가 있습니다."),
+
 
     // Post
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "포스트를 찾을 수 없습니다."),
