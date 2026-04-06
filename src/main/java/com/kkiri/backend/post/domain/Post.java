@@ -62,9 +62,9 @@ public class Post {
         return this.user.getId().equals(userId);
     }
 
-    /*public boolean isArchived() {
+    public boolean isArchived() {
         return this.archived;
-    }*/
+    }
 
     public void archive() {
         this.archived = true;
