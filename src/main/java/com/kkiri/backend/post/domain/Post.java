@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -52,7 +52,7 @@ public class Post {
         post.group = group;
         post.imageUrl = imageUrl;
         post.caption = caption;
-        post.hourBucket = LocalDateTime.now(ZoneOffset.UTC).getHour();
+        post.hourBucket = LocalDateTime.now(ZoneId.of("Asia/Seoul")).getHour();
         post.archived = false;
         post.createAudit = CreateAudit.now();
         return post;

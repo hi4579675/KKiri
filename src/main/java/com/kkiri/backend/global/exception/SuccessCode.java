@@ -18,6 +18,7 @@ public enum SuccessCode implements BaseCode {
 
     // User
     PROFILE_CREATED(HttpStatus.CREATED, "프로필이 생성되었습니다."),
+    PROFILE_FETCHED(HttpStatus.OK, "프로필 조회에 성공했습니다."),
     PROFILE_UPDATED(HttpStatus.OK, "프로필이 수정되었습니다."),
     NICKNAME_AVAILABLE(HttpStatus.OK, "사용 가능한 닉네임이에요."),
 
@@ -32,9 +33,18 @@ public enum SuccessCode implements BaseCode {
     // Post
     POST_CREATED(HttpStatus.CREATED, "포스트가 업로드되었습니다."),
     POST_DELETED(HttpStatus.OK, "포스트가 삭제되었습니다."),
-    REACTION_TOGGLED(HttpStatus.OK, "반응이 반영되었습니다."),
     FEED_FETCHED(HttpStatus.OK, "피드 조회에 성공했습니다."),
     PRESIGNED_URL_ISSUED(HttpStatus.OK, "업로드 URL이 발급되었습니다."),
+
+    // Reaction
+    REACTION_ADDED(HttpStatus.OK, "반응이 추가되었습니다."),
+    REACTION_REMOVED(HttpStatus.OK, "반응이 취소되었습니다."),
+    REACTIONS_FETCHED(HttpStatus.OK, "반응 목록 조회에 성공했습니다."),
+
+    // Comment
+    COMMENT_CREATED(HttpStatus.CREATED, "댓글이 작성되었습니다."),
+    COMMENT_DELETED(HttpStatus.OK, "댓글이 삭제되었습니다."),
+    COMMENTS_FETCHED(HttpStatus.OK, "댓글 목록 조회에 성공했습니다."),
 
     // Archive
     ARCHIVE_FETCHED(HttpStatus.OK, "아카이브 조회에 성공했습니다.");

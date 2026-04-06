@@ -38,6 +38,13 @@ public enum ErrorCode implements BaseErrorCode {
     IMAGE_TOO_LARGE(HttpStatus.BAD_REQUEST, "사진이 너무 커요."),
     ARCHIVED_POST_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN, "아카이브된 포스트는 삭제할 수 없어요."),
 
+    // Reaction
+    REACTION_NOT_FOUND(HttpStatus.NOT_FOUND, "반응을 찾을 수 없습니다."),
+
+    // Comment
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."),
+    FORBIDDEN_COMMENT(HttpStatus.FORBIDDEN, "본인 댓글만 삭제할 수 있습니다."),
+
     // Common
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다."),

@@ -63,16 +63,9 @@ public class GroupService {
         Group group = groupRepository.findByInviteCode(inviteCode)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INVITE_CODE));
 
-        // [TODO: 테스트용] 이미 멤버면 에러 없이 현재 그룹 정보 반환
-        // 실제 운영 시 아래 주석 해제하고 테스트용 코드 제거
         if (groupMemberRepository.existsByGroupIdAndUserId(group.getId(), userId)) {
-            long count = groupMemberRepository.countByGroupId(group.getId());
-            return new JoinGroupResponse(group.getId(), group.getName(), count);
+            throw new CustomException(ErrorCode.ALREADY_IN_GROUP);
         }
-        // [운영용 — 현재 주석]
-        // if (groupMemberRepository.existsByGroupIdAndUserId(group.getId(), userId)) {
-        //     throw new CustomException(ErrorCode.ALREADY_IN_GROUP);
-        // }
         if (group.isInviteCodeExpired()) {
             throw new CustomException(ErrorCode.EXPIRED_INVITE_CODE);
         }
