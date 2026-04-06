@@ -1,0 +1,2 @@
+// This file prevents Gradle from searching parent directories for settings.gradle
+// The actual Android settings are in android/settings.gradle

@@ -1,0 +1,9 @@
+{
+  "name": "kkiri",
+  "private": true,
+  "scripts": {
+    "start": "cd frontend && npx expo start",
+    "android": "cd frontend && npx expo start --android",
+    "ios": "cd frontend && npx expo start --ios"
+  }
+}
