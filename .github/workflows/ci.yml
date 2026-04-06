@@ -43,7 +43,7 @@ jobs:
           DB_PASSWORD: postgres
           REDIS_HOST: localhost
           REDIS_PORT: 6379
-          SPRING_PROFILES_ACTIVE: prod
+          SPRING_PROFILES_ACTIVE: test
     services:
       postgres:
         image: postgres:15

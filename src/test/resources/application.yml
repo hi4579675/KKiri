@@ -1,0 +1,42 @@
+spring:
+  profiles:
+    active: test
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-expiration: ${JWT_ACCESS_EXPIRATION}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION}
+
+kakao:
+  client-id: test-kakao-client-id
+  client-secret: test-kakao-client-secret
+  redirect-uri: http://localhost:8080/api/auth/kakao/callback
+
+r2:
+  access-key: test-access-key
+  secret-key: test-secret-key
+  bucket-name: test-bucket
+  endpoint: https://test.r2.cloudflarestorage.com
+  public-url: https://test-public.r2.dev
+
+firebase:
+  project-id: test-project-id
