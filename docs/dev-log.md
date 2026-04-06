@@ -1,36 +1,6 @@
 # dev-log
 
-## 2026-04-06 (Phase 5 — 포스트 도메인)
 
-**한 것**
-- `Post` 엔티티 구현 (`hourBucket` 자동 기록, `archived` 필드, 팩토리 메서드)
-- `PostRepository` 구현
-- `R2Config` — S3Client, S3Presigner 빈 등록 (Cloudflare R2 연동)
-- `R2StorageAdapter` — presigned PUT URL 생성 (15분 유효), 비동기 오브젝트 삭제
-- `AsyncConfig` — `@EnableAsync` 등록
-- `FcmConfig` — Firebase Admin SDK 초기화 (서비스 계정 JSON 환경변수로 관리)
-- `FcmService` — 포스트 업로드 시 그룹 멤버 FCM 푸시 비동기 발송
-- `PostService` — presigned URL 발급 / 포스트 생성 / 포스트 삭제
-- `PostController` — 3개 엔드포인트 구현 (US-05, US-06, US-07)
-- DTO: `PresignedUrlRequest`, `PresignedUrlResponse`, `CreatePostRequest`, `PostResponse`
-- `ErrorCode.ARCHIVED_POST_DELETE_FORBIDDEN` 추가
-- `SwaggerConfig`, 전체 컨트롤러 Swagger 어노테이션 적용 (`@Parameter(hidden = true)`)
-
-**막힌 것 & 해결법**
-- R2 presigned URL PUT 400 Bad Request
-  → Postman이 `Cache-Control`, `Postman-Token` 헤더 자동 추가 → 서명 불일치
-  → curl로 테스트하니 바로 성공 (`Content-Type` 헤더 하나만 넣어야 함)
-- Swagger에서 `@LoginUser` 파라미터가 쿼리 파라미터로 노출됨
-  → `@Parameter(hidden = true)` 추가로 해결
-- Swagger Authorize 자물쇠 버튼 없음
-  → `SwaggerConfig` 신규 생성, Bearer SecurityScheme 등록
-
-**다음에 할 것**
-- Phase 6: 피드 조회 (시간대별 그룹핑, 친구 스토리)
-- FCM 서비스 계정 JSON 환경변수 연결 (Railway)
-- `joinGroup` 테스트용 코드 → 운영용으로 원복
-
----
 
 ## 2025-04-03
 
@@ -46,7 +16,6 @@
  
 
 **막힌 것**
-- 카카오 IP 제한 문제: 로컬 IP(183.109.80.187)가 카카오 API에서 차단됨
 - jwt.expiration vs jwt.access-expiration 키 이름 불일치로 앱 실행 실패
   → 해결: application.yml의 키 이름을 jwt.access-expiration으로 통일
 - JwtProvider Key 타입 오류 (verifyWith()가 SecretKey 요구)
@@ -56,12 +25,7 @@
 - WebClient 내부 private static 클래스로 JSON 파싱 실패
   → 해결: Map<String, Object>로 파싱 방식 변경
 
-
-**다음에 할 것**
-- Phase 3: 프로필 설정 API (US-02)
-- 
-
-
+  
 
 ## 2026-04-04
 
@@ -153,7 +117,37 @@
 - Phase 5: 게시물 업로드 (Presigned URL + Cloudflare R2)
 
 ---
+## 2026-04-06 (Phase 5 — 포스트 도메인)
 
+**한 것**
+- `Post` 엔티티 구현 (`hourBucket` 자동 기록, `archived` 필드, 팩토리 메서드)
+- `PostRepository` 구현
+- `R2Config` — S3Client, S3Presigner 빈 등록 (Cloudflare R2 연동)
+- `R2StorageAdapter` — presigned PUT URL 생성 (15분 유효), 비동기 오브젝트 삭제
+- `AsyncConfig` — `@EnableAsync` 등록
+- `FcmConfig` — Firebase Admin SDK 초기화 (서비스 계정 JSON 환경변수로 관리)
+- `FcmService` — 포스트 업로드 시 그룹 멤버 FCM 푸시 비동기 발송
+- `PostService` — presigned URL 발급 / 포스트 생성 / 포스트 삭제
+- `PostController` — 3개 엔드포인트 구현 (US-05, US-06, US-07)
+- DTO: `PresignedUrlRequest`, `PresignedUrlResponse`, `CreatePostRequest`, `PostResponse`
+- `ErrorCode.ARCHIVED_POST_DELETE_FORBIDDEN` 추가
+- `SwaggerConfig`, 전체 컨트롤러 Swagger 어노테이션 적용 (`@Parameter(hidden = true)`)
+
+**막힌 것 & 해결법**
+- R2 presigned URL PUT 400 Bad Request
+  → Postman이 `Cache-Control`, `Postman-Token` 헤더 자동 추가 → 서명 불일치
+  → curl로 테스트하니 바로 성공 (`Content-Type` 헤더 하나만 넣어야 함)
+- Swagger에서 `@LoginUser` 파라미터가 쿼리 파라미터로 노출됨
+  → `@Parameter(hidden = true)` 추가로 해결
+- Swagger Authorize 자물쇠 버튼 없음
+  → `SwaggerConfig` 신규 생성, Bearer SecurityScheme 등록
+
+**다음에 할 것**
+- Phase 6: 피드 조회 (시간대별 그룹핑, 친구 스토리)
+- FCM 서비스 계정 JSON 환경변수 연결 (Railway)
+- `joinGroup` 테스트용 코드 → 운영용으로 원복
+
+---
 ## 2026-04-06 (Phase 5.5 — 프론트엔드 연동 버그 수정)
 
 > 백엔드 Phase 5까지 완성 후 React Native(Expo) 프론트엔드를 실제로 붙이는 과정에서
