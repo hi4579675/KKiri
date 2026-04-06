@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,9 +35,9 @@ public class FeedService {
 
         // 2.  cursor가 있으면 그 값 사용 → 이전 페이지 이어서 조회
         //     cursor가 없으면 현재 시각 hour → 가장 최신부터 조회
-        int cursorHourBucket = (cursor != null) ? cursor : LocalDateTime.now(ZoneOffset.UTC).getHour();
-        // 서버 시각 기준이 아닌 UTC 기준으로 고정
-        LocalDate today = LocalDate.now(ZoneOffset.UTC);
+        ZoneId kst = ZoneId.of("Asia/Seoul");
+        int cursorHourBucket = (cursor != null) ? cursor : LocalDateTime.now(kst).getHour();
+        LocalDate today = LocalDate.now(kst);
 
         // 3. 포스트 조회
         List<Post> posts = postRepository.findFeed(
