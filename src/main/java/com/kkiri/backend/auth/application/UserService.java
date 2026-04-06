@@ -1,6 +1,8 @@
 package com.kkiri.backend.auth.application;
 
 import com.kkiri.backend.auth.application.dto.CompleteProfileRequest;
+import com.kkiri.backend.auth.application.dto.UpdateProfileRequest;
+import com.kkiri.backend.auth.application.dto.UserProfileResponse;
 import com.kkiri.backend.auth.domain.User;
 import com.kkiri.backend.auth.infrastructure.UserRepository;
 import com.kkiri.backend.global.exception.CustomException;
@@ -13,6 +15,23 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+
+    public UserProfileResponse getMe(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        return UserProfileResponse.from(user);
+    }
+
+    @Transactional
+    public void updateProfile(Long userId, UpdateProfileRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        // 닉네임이 변경된 경우에만 중복 체크
+        if (!user.getNickname().equals(request.nickname()) && userRepository.existsByNickname(request.nickname())) {
+            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+        }
+        user.updateProfile(request.nickname(), request.avatarEmoji(), request.avatarColor());
+    }
 
     /**
      * 닉네임 중복 확인.

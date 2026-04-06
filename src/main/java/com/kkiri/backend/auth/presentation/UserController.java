@@ -3,7 +3,9 @@ package com.kkiri.backend.auth.presentation;
 import com.kkiri.backend.auth.application.UserService;
 import com.kkiri.backend.auth.application.dto.CompleteProfileRequest;
 import com.kkiri.backend.auth.application.dto.UpdateFcmTokenRequest;
+import com.kkiri.backend.auth.application.dto.UpdateProfileRequest;
 import com.kkiri.backend.auth.application.dto.UpdatePushEnabledRequest;
+import com.kkiri.backend.auth.application.dto.UserProfileResponse;
 import com.kkiri.backend.global.common.ApiResponse;
 import com.kkiri.backend.global.exception.SuccessCode;
 import com.kkiri.backend.global.security.LoginUser;
@@ -23,6 +25,24 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+
+    @Operation(summary = "내 프로필 조회")
+    @GetMapping
+    public ResponseEntity<ApiResponse<UserProfileResponse>> getMe(
+            @Parameter(hidden = true) @LoginUser Long userId
+    ) {
+        return ApiResponse.onSuccess(SuccessCode.PROFILE_FETCHED, userService.getMe(userId));
+    }
+
+    @Operation(summary = "프로필 수정 (닉네임·아바타)")
+    @PatchMapping("/profile")
+    public ResponseEntity<ApiResponse<Void>> updateProfile(
+            @Parameter(hidden = true) @LoginUser Long userId,
+            @RequestBody UpdateProfileRequest request
+    ) {
+        userService.updateProfile(userId, request);
+        return ApiResponse.onSuccess(SuccessCode.PROFILE_UPDATED, null);
+    }
 
     @Operation(summary = "닉네임 중복 확인", description = "인증 불필요. 프로필 설정 화면에서 실시간 중복 체크")
     @GetMapping("/nickname/check")
