@@ -40,3 +40,4 @@ r2:
 
 firebase:
   project-id: test-project-id
+  credentials:
