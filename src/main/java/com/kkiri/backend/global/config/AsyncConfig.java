@@ -1,4 +1,8 @@
 package com.kkiri.backend.global.config;
 
-public class AsyncConfig {
-}
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
+
+@Configuration
+@EnableAsync
+public class AsyncConfig {}
