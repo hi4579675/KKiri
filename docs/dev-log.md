@@ -29,6 +29,37 @@
 - Phase 4: 그룹 도메인 (Group, GroupMember 엔티티, 그룹 생성/참여/탈퇴/초대코드 재발급)
 - Railway 배포 후 실제 카카오 로그인 검증
 
+---
+
+## 2026-04-06 (Railway 배포 + 실제 카카오 로그인 검증)
+
+**한 것**
+- `application-prod.yml` Redis 비밀번호 설정 추가 (`spring.data.redis.password`)
+- `.gitignore`에서 `application-prod.yml` 제외 (환경변수 참조만 있어 커밋 안전)
+- Railway KKiri 서비스 환경변수 설정 (DB, Redis, JWT, Kakao 등)
+- Railway 도메인 발급 (`kkiri-production.up.railway.app`)
+- `build.gradle` Java toolchain → `sourceCompatibility`/`targetCompatibility`로 변경
+- `Procfile` 추가 (JAR 실행 경로 직접 지정)
+- Railway 배포 후 실제 카카오 로그인 + 프로필 설정 검증 완료
+
+**막힌 것 & 해결법**
+- Railway 빌드 실패: Java 17 못 찾음
+  → `toolchain { languageVersion = JavaLanguageVersion.of(17) }` 방식이 Railway에서 특정 JDK 설치를 탐색하다 실패
+  → `sourceCompatibility = JavaVersion.VERSION_17`로 변경해 시스템 Java 그대로 사용
+- Railway 배포 후 Crashed: JAR 파일 못 찾음
+  → Railway 기본 실행 명령어가 `*/build/libs/*.jar`로 탐색하는데 실제 경로는 `build/libs/`
+  → `Procfile`에 실행 명령어 직접 지정
+- 앱 실행 시 `local` 프로파일 활성화 (`application.yml`에 `spring.profiles.active: local` 하드코딩됨)
+  → Railway 환경변수 `SPRING_PROFILES_ACTIVE=prod`가 안 먹힘
+  → `Procfile`에 `-Dspring.profiles.active=prod` 직접 추가
+- `${DB_URL}` 리터럴 문자열로 전달됨
+  → Railway Variables에서 `${{Postgres.PGHOST}}` 참조 변수가 체인 해석이 안 됨
+  → Postgres 서비스 Connect 탭에서 실제 내부 URL 확인 후 직접 입력
+  → `DB_URL=jdbc:postgresql://postgres.railway.internal:5432/railway`
+
+**다음에 할 것**
+- Phase 4: 그룹 도메인 (Group, GroupMember 엔티티, 그룹 생성/참여/탈퇴/초대코드 재발급)
+
 ## 2025-04-04
 
 **한 것**
