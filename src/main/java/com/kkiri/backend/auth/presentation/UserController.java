@@ -7,12 +7,16 @@ import com.kkiri.backend.auth.application.dto.UpdatePushEnabledRequest;
 import com.kkiri.backend.global.common.ApiResponse;
 import com.kkiri.backend.global.exception.SuccessCode;
 import com.kkiri.backend.global.security.LoginUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Tag(name = "User", description = "유저 관련 API")
 @RestController
 @RequestMapping("/api/users/me")
 @RequiredArgsConstructor
@@ -20,49 +24,42 @@ public class UserController {
 
     private final UserService userService;
 
-    /**
-     * 닉네임 중복 확인.
-     * 프로필 설정 화면에서 실시간으로 호출 — 인증 불필요 (permitAll).
-     */
+    @Operation(summary = "닉네임 중복 확인", description = "인증 불필요. 프로필 설정 화면에서 실시간 중복 체크")
     @GetMapping("/nickname/check")
-    public ResponseEntity<ApiResponse<Map<String, Boolean>>> checkNickname(@RequestParam("nickname") String nickname) {
+    public ResponseEntity<ApiResponse<Map<String, Boolean>>> checkNickname(
+            @RequestParam("nickname") String nickname
+    ) {
         boolean available = userService.isNicknameAvailable(nickname);
         return ApiResponse.onSuccess(SuccessCode.NICKNAME_AVAILABLE, Map.of("available", available));
     }
-    /**
-     * 프로필 최초 설정 (US-02).
-     * 완료 후 profileCompleted = true → ProfileCompleteFilter 통과 가능.
-     */
+
+    @Operation(summary = "프로필 최초 설정", description = "완료 후 profileCompleted=true, 이후 모든 API 접근 가능")
     @PostMapping("/profile")
     public ResponseEntity<ApiResponse<Void>> completeProfile(
-            @LoginUser Long userId,
+            @Parameter(hidden = true) @LoginUser Long userId,
             @RequestBody CompleteProfileRequest request
-            ){
+    ) {
         userService.completeProfile(userId, request);
         return ApiResponse.onSuccess(SuccessCode.PROFILE_CREATED, null);
     }
 
-    /**
-     * FCM 토큰 갱신.
-     * 앱 시작마다 호출해 최신 토큰 유지.
-     */
+    @Operation(summary = "FCM 토큰 갱신", description = "앱 시작마다 호출해 최신 토큰 유지")
     @PatchMapping("/fcm-token")
     public ResponseEntity<ApiResponse<Void>> updateFcmToken(
-            @LoginUser Long userId,
-            @RequestBody UpdateFcmTokenRequest request){
+            @Parameter(hidden = true) @LoginUser Long userId,
+            @RequestBody UpdateFcmTokenRequest request
+    ) {
         userService.updateFcmToken(userId, request.fcmToken());
         return ApiResponse.onSuccess(SuccessCode.PROFILE_UPDATED, null);
     }
-    /**
-     * 알림 ON/OFF 변경.
-     */
+
+    @Operation(summary = "알림 ON/OFF 변경")
     @PatchMapping("/push-enabled")
     public ResponseEntity<ApiResponse<Void>> updatePushEnabled(
-            @LoginUser Long userId,
-            @RequestBody UpdatePushEnabledRequest request) {
-
+            @Parameter(hidden = true) @LoginUser Long userId,
+            @RequestBody UpdatePushEnabledRequest request
+    ) {
         userService.updatePushEnabled(userId, request.pushEnabled());
         return ApiResponse.onSuccess(SuccessCode.PROFILE_UPDATED, null);
     }
-
 }

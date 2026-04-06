@@ -4,18 +4,15 @@ import com.kkiri.backend.auth.application.AuthService;
 import com.kkiri.backend.auth.application.dto.KakaoLoginRequest;
 import com.kkiri.backend.auth.application.dto.RefreshRequest;
 import com.kkiri.backend.auth.application.dto.TokenResponse;
-import com.kkiri.backend.auth.domain.User;
-import com.kkiri.backend.auth.infrastructure.RefreshTokenRepository;
-import com.kkiri.backend.auth.infrastructure.UserRepository;
 import com.kkiri.backend.global.common.ApiResponse;
 import com.kkiri.backend.global.exception.SuccessCode;
-import com.kkiri.backend.global.security.JwtProvider;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Duration;
-
+@Tag(name = "Auth", description = "인증 관련 API")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -23,26 +20,17 @@ public class AuthController {
 
     private final AuthService authService;
 
-    /**
-     * 카카오 로그인.
-     * 앱이 카카오 SDK로 받은 accessToken을 전달하면 서버 JWT를 발급합니다.
-     * profileCompleted = false이면 앱은 프로필 설정 화면으로 이동해야 합니다.
-     */
+    @Operation(summary = "카카오 로그인", description = "카카오 SDK accessToken으로 서버 JWT 발급. profileCompleted=false면 프로필 설정 필요")
     @PostMapping("/kakao")
     public ResponseEntity<ApiResponse<TokenResponse>> kakaoLogin(@RequestBody KakaoLoginRequest request) {
         TokenResponse response = authService.kakaoLogin(request.accessToken());
         return ApiResponse.onSuccess(SuccessCode.LOGIN_SUCCESS, response);
     }
 
-    /**
-     * Access Token 재발급.
-     * Access Token 만료 시 Refresh Token으로 새 토큰을 발급받습니다.
-     */
+    @Operation(summary = "토큰 재발급", description = "Refresh Token으로 Access Token 재발급 (Rotation 방식)")
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<TokenResponse>> refresh(@RequestBody RefreshRequest request) {
         TokenResponse response = authService.refresh(request.refreshToken());
         return ApiResponse.onSuccess(SuccessCode.TOKEN_REFRESHED, response);
     }
-
-
 }
