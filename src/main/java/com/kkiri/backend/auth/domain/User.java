@@ -4,6 +4,7 @@ import com.kkiri.backend.global.audit.CreateAudit;
 import com.kkiri.backend.global.audit.UpdateAudit;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
